@@ -48,7 +48,7 @@ if ($readarray) {
 	$counter = 0;
 	$index = 0;
 	$csvarray = array();
-	foreach ($readarray as $value) {
+	foreach ($readarray as $key => $value) {
 		foreach ($value as $item) {
 			$csvarray[$index]['Running number'] = $index + 1;
 			switch ($counter) {
@@ -56,7 +56,7 @@ if ($readarray) {
 					$item = explode("    ", $item);
 						$i = 0;
 					foreach ($item as $b) {
-						if (!empty($b)) {
+						if (trim($b) != '') {
 							if ($i == 0) {
 								$csvarray[$index]['Title'] = trim($b);
 							}
@@ -65,13 +65,16 @@ if ($readarray) {
 							}							
 							$i++;
 						}
-					}					
+					}
+					if (empty($csvarray[$index]['Author'])) {
+						$csvarray[$index]['Author'] = '';
+					}
 					break;
 				case 1 : 					
 					$item = explode("  ", $item);
 						$i = 0;
 					foreach ($item as $b) {
-						if (!empty($b)) {
+						if (trim($b) != '') {
 							if ($i == 0) {
 								$csvarray[$index]['Shelfmark'] = trim($b);
 							}
@@ -85,8 +88,8 @@ if ($readarray) {
 				case 2 : 
 					$item = explode("  ", $item);
 						$i = 0;
-					foreach ($item as $b) {
-						if (!empty($b)) {
+					foreach ($item as $b) {					
+						if (trim($b) != '') {
 							if ($i == 0) {
 								$csvarray[$index]['Barcode'] = trim($b);
 							}
@@ -107,12 +110,12 @@ if ($readarray) {
 			}
 			$counter++;
 		}
-	}
+	}	
 	if (!empty($csvarray)) {
 		$fp = fopen('file.csv', 'w');
 		fputcsv($fp, $fileheader);
 		fputcsv($fp, array());
-		foreach ($csvarray as $row) {
+		foreach ($csvarray as $row) {		
 			 fputcsv($fp, $row);
 		}
 	}
